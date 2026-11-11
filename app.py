@@ -8,7 +8,7 @@ from datetime import datetime
 
 st.set_page_config(page_title="GOLD AI", page_icon="🥇", layout="wide")
 
-HISTORY_FILE = "signal_history.json"
+HISTORY_FILE = "gold_history.json"
 
 def load_history():
     if os.path.exists(HISTORY_FILE):
