@@ -7,22 +7,29 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: gold-ai-analysis
+  cancel-in-progress: false
 
 jobs:
   gold-analysis:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Repositoryni yuklash
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Pythonni sozlash
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Kerakli kutubxonalarni o'rnatish
+      - name: Kutubxonalarni o'rnatish
         run: |
           pip install yfinance pandas requests
 
@@ -31,3 +38,13 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python .github/workflows/auto_alert.py
+
+      - name: Signal tarixini saqlash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .gold_ai_state.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update GOLD AI signal state"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
