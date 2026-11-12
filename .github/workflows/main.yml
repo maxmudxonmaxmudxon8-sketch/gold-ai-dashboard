@@ -1,0 +1,30 @@
+
+name: GOLD AI Automatic Analysis
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gold-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repositoryni yuklash
+        uses: actions/checkout@v4
+
+      - name: Pythonni sozlash
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Kerakli kutubxonalarni o'rnatish
+        run: |
+          pip install yfinance pandas requests
+
+      - name: GOLD AI tahlilini ishga tushirish
+        run: python auto_alert.py
