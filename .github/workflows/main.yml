@@ -27,4 +27,4 @@ jobs:
           pip install yfinance pandas requests
 
       - name: GOLD AI tahlilini ishga tushirish
-        run: python auto_alert.py
+        run: python .github/workflows/auto_alert.py
